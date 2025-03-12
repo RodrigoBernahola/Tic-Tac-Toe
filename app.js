@@ -30,35 +30,25 @@ function Gameboard () {
 
     //Se encarga de comprobar que la fila y columna selecionada no estén ocupadas y si no lo están ubica la ficha del jugador en esa celda.
 
-    const dropToken = (row, column, playerToken)  => {
-
-        let res;
-
-        board.forEach(
-             (itemRow, indexItemRow) =>  itemRow.forEach( 
-                (itemColumn, indexItemColumn) => {
-
-                    if (indexItemRow === row && indexItemColumn === column) {
-                        res = itemColumn.getValue()
-
-                        //La celda está ocupada
-                        if (res !== '') {
-                            console.log("La celda seleccionada está ocupada");
-                            return
-                        }
-                        else {
-                            console.log("La celda no está ocupada");
-                            itemColumn.setValue(playerToken)
-                            return
-                        }
-
-
-                    }
-                }
-            )
-        )
-
-
+    const dropToken = (row, column, playerToken) => {
+        // Si las coordenadas están fuera del rango del tablero
+        if (row < 0 || row >= board.length || column < 0 || column >= board[0].length) {
+            console.log("Coordenadas fuera del tablero");
+            return false;
+        }
+        
+        // Acceder directamente a la celda usando los índices
+        const targetCell = board[row][column];
+        
+        // Verificar si la celda está ocupada
+        if (targetCell.getValue() !== '') {
+            console.log("La celda seleccionada está ocupada");
+            return false;
+        } else {
+            console.log("La celda no está ocupada");
+            targetCell.setValue(playerToken);
+            return true;
+        }
     }
 
     //Devuelve el array tablero almacenado en la variable board
@@ -87,7 +77,6 @@ function Gameboard () {
 
 
     return {getBoard, dropToken, printBoard};
-
 
 }
 
@@ -132,7 +121,7 @@ function GameController() {
 
     const playerOne = {
 
-        name: "pepe",
+        name: "Pepe",
         token: 'X'
 
     };
@@ -142,10 +131,7 @@ function GameController() {
         token: 'O'
     }
 
-
-
     //Definición de métodos del controlador
-
 
     //Este método se encarga de determinar si el jugador que puso una ficha ganó el juego o no.
     const checkWinner = (player) => {
@@ -212,44 +198,97 @@ function GameController() {
             return true;
         }
 
-        console.log("No se encontró un ganador");
+
+        //Controlar si se produjo un empate entre los jugadores
+        let isFull = true;
+        const ROWS = 3;
+
+        for (let i = 0; i < ROWS; i++) {
+
+            for (let j = 0; j < COLUMNS; j++) {
+
+                if (boardGame[i][j].getValue() === '') {
+                    isFull = false;
+                    return false
+                }
+
+            }
+
+
+        }
+
+        if (isFull) {
+            console.log("Empate");
+            return null;
+        }
+        console.log("No se encontró un ganador");        
         return false
 
     }
 
+    //Este método se encarga de tomar la fila y columna deseada por el jugador y colocar la ficha en una posición válida
+    const playRound = (player) => {
 
-    //PRIMERA RONDA
-    board.dropToken(0, 2, playerOne.token);
+        const token = player.token;
 
-    console.log(board.printBoard())
+        //dropToken = (row, column, playerToken) 
 
-    //checkWinner(playerOne);
+        let choice;
 
-    // board.dropToken(2, 2, playerTwo.token);
+        do {
+            
+            let row = parseInt(prompt("Ingrese la fila que desea: "));
+            let column = parseInt(prompt("Ingrese la columna que desea: "));
 
-    // console.log(board.printBoard())
+            choice = board.dropToken(row, column, token);
 
-    // //SEGUNDA RONDA
-    board.dropToken(1, 1, playerOne.token);
+        } while (!choice);
 
-    console.log(board.printBoard())
+    }
 
-    // board.dropToken(2, 0, playerTwo.token);
+    const switchActivePlayer = (activePlayer, playerOne, playerTwo) => {
 
-    // console.log(board.printBoard())
+        if (activePlayer === playerOne) {
+            return playerTwo;
+        }
+        else{
+            return playerOne
+        }
 
-    //TERCERA RONDA 
+    }
 
-    board.dropToken(2, 0, playerOne.token);
+    const playGame = (playerOne, playerTwo) => {
 
-    console.log(board.printBoard());
+        let winner;
 
-    checkWinner(playerOne)
+        let activePlayer = playerOne;
 
-    
+        do {
+            playRound(activePlayer);
+            console.log(board.printBoard());
+            winner = checkWinner(activePlayer);
+
+            if (winner === null) {
+                return winner;
+            }
+            else if (!winner) {
+                activePlayer = switchActivePlayer(activePlayer, playerOne, playerTwo);
+            }
+        } while (!winner);
+
+        return activePlayer;
+
+    }
+
+    let res = playGame(playerOne, playerTwo);
+
+    if (res !== null) {
+        console.log("El ganador fue: " + res.name);
+    }
+    else{
+        console.log("Se produjo un empate");
+    }
 
 }
-
-
 
 const controller = GameController();
