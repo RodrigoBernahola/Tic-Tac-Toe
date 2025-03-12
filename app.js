@@ -61,11 +61,32 @@ function Gameboard () {
 
     }
 
-
+    //Devuelve el array tablero almacenado en la variable board
     const getBoard = () => board;
 
+    //Muestra por consola el estado del juego actualmente
+    const printBoard = () => {
 
-    return {getBoard, dropToken};
+        let output = '';
+ 
+        board.forEach( 
+            (itemRow) => itemRow.forEach(
+            (itemColumn, indexItemColumn) => {
+
+                output += '|' + itemColumn.getValue() + '| ';
+
+                if ((indexItemColumn + 1) % 3 === 0) {output += ' \n '};
+
+            })
+        
+        )
+
+        return output
+
+    }
+
+
+    return {getBoard, dropToken, printBoard};
 
 
 }
@@ -121,20 +142,114 @@ function GameController() {
         token: 'O'
     }
 
-    board.dropToken(0, 0, playerOne.token);
 
-    console.table(board.getBoard());
 
-    board.dropToken(0, 0, playerTwo.token);
+    //Definición de métodos del controlador
 
-    console.table(board.getBoard());
+
+    //Este método se encarga de determinar si el jugador que puso una ficha ganó el juego o no.
+    const checkWinner = (player) => {
+
+        let res;
+
+        const token = player.token;
+
+        const boardGame =  board.getBoard();
+
+        const winnerCombination = [`${token}`, `${token}`, `${token}`];
+
+        //Compruebo si las filas existentes coinciden con la combinación ganadora, es decir ['X', 'X', 'X']
+        const arrayWithRowValues = boardGame.map( (row) => row.map( (column) => column.getValue() ) );
+
+        console.log(arrayWithRowValues);
+
+        //Se comprueba si cada una de las filas del tablero es igual a ['X', 'X', 'X']
+        res = arrayWithRowValues.find( (combination) => combination.every( ( item, index) => item === winnerCombination[index])); 
+
+        if (res) {
+            console.log("Se encontró un ganador");
+            return true
+        }
+    
+        //Comprobar si las columnas existentes coinciden con la combinación ganadora, es decir ['X', 'X', 'X']
+
+        const COLUMNS = 3;
+
+        for (let j = 0; j < COLUMNS; j++) {
+
+
+            //En este condicional se controla si hubo un ganador en las columnas
+            if (
+                (boardGame[0][j].getValue() === token) &&
+                (boardGame[1][j].getValue() === token) &&
+                (boardGame[2][j].getValue() === token)
+            )
+            {
+                console.log("Se encontró un ganador");
+                return true;
+            }
+        }
+
+        //En este condicional se controla si hubo un ganador en la diagonal principal
+        if (
+            (boardGame[0][0].getValue() === token) &&
+            (boardGame[1][1].getValue() === token) &&
+            (boardGame[2][2].getValue() === token)
+        ) {
+            console.log("Se encontró un ganador");
+            return true;
+        }
+
+        //Se controla si en la diagonal inversa hay un ganador
+        if (
+
+            (boardGame[0][2].getValue() === token) &&
+            (boardGame[1][1].getValue() === token) &&
+            (boardGame[2][0].getValue() === token)
+
+        ){
+            console.log("Se encontró un ganador");
+            return true;
+        }
+
+        console.log("No se encontró un ganador");
+        return false
+
+    }
+
+
+    //PRIMERA RONDA
+    board.dropToken(0, 2, playerOne.token);
+
+    console.log(board.printBoard())
+
+    //checkWinner(playerOne);
+
+    // board.dropToken(2, 2, playerTwo.token);
+
+    // console.log(board.printBoard())
+
+    // //SEGUNDA RONDA
+    board.dropToken(1, 1, playerOne.token);
+
+    console.log(board.printBoard())
+
+    // board.dropToken(2, 0, playerTwo.token);
+
+    // console.log(board.printBoard())
+
+    //TERCERA RONDA 
+
+    board.dropToken(2, 0, playerOne.token);
+
+    console.log(board.printBoard());
+
+    checkWinner(playerOne)
+
+    
 
 }
 
 
 
 const controller = GameController();
-
-
-// console.table(board.getBoard());
-// console.log(board.getBoard());
