@@ -8,8 +8,68 @@
 </head>
 <body>
     
+    <header>
+        <h1>Tic-Tac-Toe</h1>
+    </header>
 
 
+    <!-- Usar grid para separar el contenido como en la imagen de Paint -->
+    <div class="containerScore">
+
+        <form>
+
+            <fieldset>Datos de los jugadores</fieldset>
+
+            <label for="playerOne">
+                Ingresa el nombre del jugador 1:
+                <input type="text" id="playerOne">
+            </label>
+            <label for="playerTwo">
+                Ingresa el nombre del jugador 2:
+                <input type="text" id="playerTwo">
+            </label>
+
+            <button type="button" id="startGame"> 
+                Empezar juego
+            </button>
+
+        </form>
+
+        <div class="score">
+            <h3>Score</h3>
+            <div class="scoreOne">
+                <p class="counter">Puntos del jugador 1:</p> <span class="points">0</span>
+            </div>
+            <div class="scoreTwo">
+                <p class="counter">Puntos del jugador 2:</p> <span class="points">0</span>
+            </div>
+            <div class="ties">
+                <p class="counter">Empates:</p> <span class="points">0</span>
+            </div>
+
+            <button type="button" id="restart">Reiniciar juego</button>
+        </div>
+
+
+    </div>
+
+    <main>
+
+        <div class="scoreContainer initial">
+
+            <div class="square" data-row="0" data-column="0"><button class="buttonSquare" type="button"></button></div>
+            <div class="square" data-row="0" data-column="1"><button class="buttonSquare" type="button"></button></div>
+            <div class="square" data-row="0" data-column="2"><button class="buttonSquare" type="button"></button></div>
+            <div class="square" data-row="1" data-column="0"><button class="buttonSquare" type="button"></button></div>
+            <div class="square" data-row="1" data-column="1"><button class="buttonSquare" type="button"></button></div>
+            <div class="square" data-row="1" data-column="2"><button class="buttonSquare" type="button"></button></div>
+            <div class="square" data-row="2" data-column="0"><button class="buttonSquare" type="button"></button></div>
+            <div class="square" data-row="2" data-column="1"><button class="buttonSquare" type="button"></button></div>
+            <div class="square" data-row="2" data-column="2"><button class="buttonSquare" type="button"></button></div>
+
+        </div>
+
+    </main>
 
     <script src="app.js"></script>
 </body>
